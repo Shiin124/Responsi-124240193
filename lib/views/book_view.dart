@@ -27,7 +27,8 @@ class _BookViewState extends State<BookView> {
 
   Future<void> _fetchBooks() async {
     final response = await http.get(
-      Uri.parse('https://potterapifedeperin.vercel.app/en/books'),
+      //ternyata masalahnya cuma pas salin link "-" nggak ikut kesalin, jadi linknya salah. makanya stuck diloading terus.
+      Uri.parse('https://potterapi-fedeperin.vercel.app/en/books'),
     );
     if (response.statusCode == 200) {
       setState(() {
@@ -85,9 +86,7 @@ class _BookViewState extends State<BookView> {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => const ProfileScreen(username: ''),
-                ),
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
               );
             },
           ),
@@ -111,7 +110,7 @@ class _BookViewState extends State<BookView> {
                         width: 45,
                         height: 60,
                         fit: BoxFit.cover,
-                        errorBuilder: (_, _, _) =>
+                        errorBuilder: (_, __, ___) =>
                             const Icon(Icons.person, size: 45),
                       ),
                     ),
@@ -125,7 +124,7 @@ class _BookViewState extends State<BookView> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              BookDetailView(book: buku),
+                              BookDetailView(book: buku['index']),
                         ),
                       );
                     },

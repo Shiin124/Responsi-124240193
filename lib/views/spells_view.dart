@@ -27,12 +27,25 @@ class _SpellsViewState extends State<SpellsView> {
   }
 
   Future<void> _fetchSpells() async {
-    final response = await http.get(
-      Uri.parse('https://potterapi-fedeperin.vercel.app/en/spells'),
-    );
-    if (response.statusCode == 200) {
+    try {
+      final response = await http.get(
+        Uri.parse('https://potterapi-fedeperin.vercel.app/en/spells'),
+      );
+      if (response.statusCode == 200) {
+        if (!mounted) return;
+        setState(() {
+          _spells = json.decode(response.body);
+          _isLoading = false;
+        });
+      } else {
+        if (!mounted) return;
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
       setState(() {
-        _spells = json.decode(response.body);
         _isLoading = false;
       });
     }
@@ -94,6 +107,7 @@ class _SpellsViewState extends State<SpellsView> {
   Future<void> _logout() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('isLoggedIn');
+    await prefs.remove('username');
 
     if (!mounted) return;
     _showTopSnackBar('Success!', 'Logged out Successfully', Colors.green);
@@ -171,7 +185,7 @@ class _SpellsViewState extends State<SpellsView> {
               MaterialPageRoute(builder: (context) => const BookView()),
             );
           },
-          child: const Text('book'),
+          child: const Text('Books'),
         ),
       ),
     );
